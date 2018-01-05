@@ -15,6 +15,7 @@ This set of scripts is for preparing the input files for easier usage of M&L
       ./doall
 
 
+
 ./Template
 
   templates for MFT, in the format of Template/yyyymmddhhmmss.ss/net.sta.chn 
@@ -25,6 +26,7 @@ This set of scripts is for preparing the input files for easier usage of M&L
       python mkTemp.py
       cd [/data1/zhouyj/ML]/Template     
       ./doall
+
 
 
 ./exML

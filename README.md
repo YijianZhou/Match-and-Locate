@@ -1,23 +1,31 @@
 # Match-and-Locate
-input files maker
+Input files maker for M&L.
 Package Match-and-Locate (Zhang, 2014) is an immplementation of MFT in detecting micro-seismic events.
 This set of scripts is for preparing the input files for easier usage of M&L
 
 ./Trace
 
   continuous waveforms, in the format of Trace/yyyymmdd/net.sta.chn
-  call your database (which in our workstation is /data3) and copy into related folders, and run 'doall' to change the head file and filter the traces.
-  in cmd: python mkTrace.py
-          cd [/data1/zhouyj/ML]/Trace
-          ./doall
+  Call your database (which in our workstation is /data3) and copy into related folders, and run 'doall' to change the head file and filter the traces.
+  
+  in cmd: 
+  
+      python mkTrace.py
+      cd [/data1/zhouyj/ML]/Trace     
+      ./doall
+
 
 ./Template
 
   templates for MFT, in the format of Template/yyyymmddhhmmss.ss/net.sta.chn 
-  run STA/LTA to get SNR info for selection (such as PSIRpicker, Li 2016), and run 'doall' to mark theoretical arrival time and filter the templates.
-  in cmd: python mkTemp.py
-          cd [/data1/zhouyj/ML]/Template
-          ./doall
+  Run STA/LTA to get SNR info for selection (such as PSIRpicker, Li 2016), and run 'doall' to mark theoretical arrival time and filter the templates.
+  
+  in cmd: 
+       
+      python mkTemp.py
+      cd [/data1/zhouyj/ML]/Template     
+      ./doall
+
 
 ./exML
 

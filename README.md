@@ -1,7 +1,7 @@
 # Match-and-Locate
 Input files maker for M&L.
 Package Match-and-Locate (Zhang, 2014) is an immplementation of MFT in detecting micro-seismic events.
-This set of scripts is for preparing the input files for easier usage of M&L
+This set of scripts are for preparing the input files for easier usage of M&L
 
 ./Trace
 

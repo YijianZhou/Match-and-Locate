@@ -105,7 +105,7 @@ close(NEW);
 ($dlat,$dlon,$dh) = split('/',$I);
 $np = int(2*$maxlat/$dlat + 1)*(int(2*$maxlon/$dlon + 1))*int((2*$maxh/$dh + 1));
 print STDERR "There are $np potential locations\n";
-system("/home/yanc/software/ML/bin/MatchLocate -L$L -F$F -R$R -I$I -T$T -H$H -D$D -N$N -O$O $INPUT");
+system("../bin/MatchLocate -L$L -F$F -R$R -I$I -T$T -H$H -D$D -N$N -O$O $INPUT");
 printf STDERR "../bin/MatchLocate -L$L -F$F -R$R -I$I -T$T -H$H -D$D -N$N -O$O $INPUT\n";
 
 if($O == 1 ){

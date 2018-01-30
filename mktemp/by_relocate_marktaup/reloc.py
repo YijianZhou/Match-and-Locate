@@ -49,9 +49,9 @@ def picker(stream, pwin, swin):
     if abs(tsx0-tsy0)>500 or tsx0<=swin+100 or tsy0<=swin+100:
        return 0.1, -1., ts0, -1
     # search 1s before ts0
-    tsx, snrx = CF(datax, range(tsx0-100, tsx0),swin)
+    tsx, snrx = CF(datax, range(tsx0-100, tsx0), swin)
     tsx += tsx0-100
-    tsy, snry = CF(datay, range(tsy0-100, tsy0),swin)
+    tsy, snry = CF(datay, range(tsy0-100, tsy0), swin)
     tsy += tsy0-100
     ts = (tsx + tsy) /200
     ssnr = (snrx + snry) /2

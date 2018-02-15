@@ -39,6 +39,7 @@ def preprocess(stream):
     return st.filter('bandpass', freqmin=2., freqmax=40.)
 
 def picker(stream, pwin, swin):
+    time_shift = stream[0].stats.sac.b
     datax = stream[0].data
     datay = stream[1].data
     dataz = stream[2].data
@@ -53,13 +54,13 @@ def picker(stream, pwin, swin):
     tsx += tsx0-100
     tsy, snry = CF(datay, range(tsy0-100, tsy0), swin)
     tsy += tsy0-100
-    ts = (tsx + tsy) /200
+    ts = time_shift + (tsx + tsy)/200
     ssnr = (snrx + snry) /2
     if int(ts*100)-100 <= pwin:
        return 0.2, -1, ts, -1
     # maximum SNR in time before ts are picked P
     tp, psnr = CF(dataz, range(pwin, int(ts*100) - 100), pwin)
-    tp = (tp + pwin) /100
+    tp = time_shift + (tp + pwin)/100
     return tp, ts, psnr, ssnr
 
 def CF(data, idx_range, win_len):

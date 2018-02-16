@@ -90,7 +90,7 @@ lat_range = [24.5, 26.5] # y
 
 # input file (station list)
 sta_info = 'station_ZSY'
-tmp = open(sta_info); sta_lines = tmp.readlines(); tmp.close()
+ tmp = open(sta_info); sta_lines = tmp.readlines(); tmp.close()
 sta_dic = {}
 for sta_line in sta_lines:
     sta, lon, lat, ele = sta_line.split('\t')
@@ -137,9 +137,9 @@ for stream_path in stream_paths:
         # calc org_time
         ot = calc_ot(tp, ts, vp, vs)
         # add weight (quality)
-        if psnr>20: wt=1.
+        if   psnr>20: wt=1.
         elif psnr>10: wt=0.75
-        else: wt=0.25
+        else:         wt=0.25
         pha_times.append((sta, ot, tp, ts, wt))
     # to numpy array
     pha_times = np.array(pha_times, 

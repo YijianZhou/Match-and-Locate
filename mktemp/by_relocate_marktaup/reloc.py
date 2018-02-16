@@ -59,7 +59,7 @@ def picker(stream, pwin, swin):
     if int(ts*100)-100 <= pwin:
        return 0.2, -1, ts, -1
     # maximum SNR in time before ts are picked P
-    tp, psnr = CF(dataz, range(pwin, int(ts*100) - 100), pwin)
+    tp, psnr = CF(dataz, range(pwin, int((tsx + tsy)/2) - 100), pwin)
     tp = time_shift + (tp + pwin)/100
     return tp, ts, psnr, ssnr
 
@@ -124,7 +124,7 @@ for stream_path in stream_paths:
            print('    missing trace!')
            continue
         # repick traces
-        st = read(three_chns[0])
+        st  = read(three_chns[0])
         st += read(three_chns[1])
         st += read(three_chns[2])
         st = preprocess(st)

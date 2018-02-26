@@ -2,22 +2,42 @@ import os, glob, shutil
 import numpy as np
 from obspy.core import *
 
-def calc_snr(st, ts, win_len, search_rng):
-    idx = int(ts*100)
-    time_range = range(idx - search_rng[0], idx + search_rng[1])
-    snre = CF(st[0].data, time_range, win_len)
-    snrn = CF(st[1].data, time_range, win_len)
-    snrz = CF(st[2].data, time_range, win_len)
-    return round(snre,2), round(snrn,2), round(snrz,2)
+def calc_snr(st, win_len, search_rng):
+    tp = st[0].stats.sac.t0
+    ts = st[0].stats.sac.t1
+    dt = st[0].stats.sac.b
+    idx_p = int((tp-dt)*100)
+    idx_s = int((ts-dt)*100)
+    time_range_p = range(idx_p - search_rng[0], idx_p + search_rng[1])
+    time_range_s = range(idx_s - search_rng[0], idx_s + search_rng[1])
+    # calc SNR and AMP
+    snre_p, ampe_p = CF(st[0].data, time_range_p, win_len)
+    snre_s, ampe_s = CF(st[0].data, time_range_s, win_len)
+    snrn_p, ampn_p = CF(st[1].data, time_range_p, win_len)
+    snrn_s, ampn_s = CF(st[1].data, time_range_s, win_len)
+    snrz, ampz = CF(st[2].data, time_range_p, win_len)
+    # format output
+    snre = np.round([snre_p, snre_s], 2)
+    ampe = np.round([ampe_p, ampe_s], 2)
+    snrn = np.round([snrn_p, snrn_s], 2)
+    ampn = np.round([ampn_p, ampn_s], 2)
+    snrz = round(snrz, 2)
+    ampz = round(ampz, 2)
+    tp = round(tp, 2)
+    ts = round(ts, 2)
+    return tp, ts, snre, snrn, snrz, ampe, ampn, ampz
 
-def CF(data, time_range, win_len):
+def CF(data0, time_range, win_len):
     snr = np.array([])
-    amp = data**2
+    amp = np.array([])
+    data = data0**2
     for i in time_range:
-        if sum(amp[i-win_len:i])==0: return -1
-        snri = sum(amp[i:i+win_len]) / sum(amp[i-win_len:i])
+        if sum(data[i-win_len:i])==0: return -1, -1
+        snri = sum(data[i:i+win_len]) / sum(data[i-win_len:i])
         snr = np.append(snr, snri)
-    return np.amax(snr)
+        ampi = sum(abs(data0[i:i+1]))
+        amp = np.append(amp, ampi)
+    return np.amax(snr), np.amax(amp)
 
 # output file 'catalog.dat'
 out_file = 'catalog.dat'
@@ -30,13 +50,13 @@ catalog0 = 'reloc.dat'
 tmp = open(catalog0); ctlg_lines = tmp.readlines(); tmp.close()
 
 # pick params
-win_len = 150
-search_rng = [200, 100]
+win_len = 100
+search_rng = [200, 200]
 
 # remove noisy traces
 path0 = os.getcwd()
-paths = glob.glob(os.path.join(path0, 'Template/20*'))
-#paths = glob.glob(os.path.join(path0, 'test/20160922104622.12'))
+#paths = glob.glob(os.path.join(path0, 'Template/20*'))
+paths = glob.glob(os.path.join(path0, 'test/*'))
 for path in paths:
   print('entering path {}'.format(path))
   os.chdir(path)
@@ -44,16 +64,19 @@ for path in paths:
   for zchn in zchns:
       net, sta, chn = zchn.split('.')
       three_chns = sorted(glob.glob('*%s*' %sta))
-      st = read(three_chns[0])
+      st  = read(three_chns[0])
       st += read(three_chns[1])
       st += read(three_chns[2])
-      ts = st[0].stats.sac.t1 - st[0].stats.sac.b
-      snre, snrn, snrz = calc_snr(st, ts, win_len, search_rng)
-      print('    ', sta, round(ts-10, 2), snre, snrn, snrz)
-      if snre + snrn < 10 or snrz < 2.5\
-         or snre < 3 or snrn < 3\
+      st = st.normalize()
+      tp, ts, snre, snrn, snrz, ampe, ampn, ampz = calc_snr(st, win_len, search_rng)
+      print('    ', sta, 'tp:', tp, 'ts:', ts)
+      print('        ', 'snr(e,n,z) = ', snre, snrn, snrz)
+      print('        ', 'amp(e,n,z) = ', ampe, ampn, ampz)
+      if snrz<10 or snre[0]<5 or snrn[0]<5\
+         or ((snre[1]<3 or snrn[1]<3 or snre[1]+snrn[1]<10)\
+             and (ampe[1]<0.9 or ampn[1]<0.9))\
          or st[0].stats.sac.t1>25:
-         for fname in three_chns: os.unlink(fname)
+         print('False!')
   # check if too few temps left
   if len(glob.glob('*')) < 9: shutil.rmtree(path)
 
@@ -70,4 +93,4 @@ for path in paths:
          date = '/'.join(date.split('-'))
          time = time[0:11]
          output.write('{} {} {} {}  5 M {}\n'.format(date, time, lat, lon, mag[0:3]))
-
+         break

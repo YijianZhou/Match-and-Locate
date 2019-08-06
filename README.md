@@ -1,3 +1,5 @@
+Try https://github.com/YijianZhou/MFT for efficient and effective MFT for earthquake detection. This package will not be updated.
+
 # Match-and-Locate
 Input files maker for M&L.
 Package Match-and-Locate (Zhang, 2014) is an immplementation of MFT in detecting micro-seismic events.

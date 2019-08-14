@@ -1,4 +1,4 @@
-Try https://github.com/YijianZhou/MFT for efficient and effective MFT for earthquake detection. This package will not be updated.
+Try https://github.com/YijianZhou/MFT for efficient and effective MFT earthquake detection. This package will not be updated.
 
 # Match-and-Locate
 Input files maker for M&L.
